@@ -2,7 +2,7 @@ export default function ProgressBar({ value }) {
   const color =
     value >= 100 ? '#10b981' :
     value >= 60  ? '#6366f1' :
-    value >= 30  ? '#f59e0b' : '#ef4444';
+    value >= 30  ? '#f59e0b' : '#e5e7eb';
 
   return (
     <div style={{ background: '#e5e7eb', borderRadius: 99, height: 8, overflow: 'hidden' }}>

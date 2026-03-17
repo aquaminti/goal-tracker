@@ -4,28 +4,28 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [ready, setReady] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const stored = localStorage.getItem('tp_user');
+    const stored = localStorage.getItem('user');
     if (stored) setUser(JSON.parse(stored));
-    setReady(true);
+    setLoading(false);
   }, []);
 
   const login = (userData, token) => {
-    localStorage.setItem('tp_token', token);
-    localStorage.setItem('tp_user', JSON.stringify(userData));
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(userData));
     setUser(userData);
   };
 
   const logout = () => {
-    localStorage.removeItem('tp_token');
-    localStorage.removeItem('tp_user');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, ready }}>
+    <AuthContext.Provider value={{ user, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

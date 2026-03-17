@@ -10,6 +10,10 @@ export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  const handleChange = (e) => {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -17,92 +21,85 @@ export default function Login() {
     try {
       const { data } = await axios.post('/auth/login', form);
       login(data.user, data.token);
-      navigate('/');
+      navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.message || 'Ошибка входа');
+      setError(err.response?.data?.message || 'Что-то пошло не так');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={s.page}>
-      <div style={s.left}>
-        <img
-          src="https://images.unsplash.com/photo-1488085061387-422e29b40080?w=900&auto=format&fit=crop"
-          alt="travel"
-          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-        />
-        <div style={s.overlay}>
-          <div style={s.quote}>
-            <p style={s.quoteText}>«Мир — это книга. Кто не путешествует — читает лишь одну страницу.»</p>
-            <span style={s.quoteAuthor}>— Блаженный Августин</span>
-          </div>
+    <div style={styles.page}>
+      <div style={styles.card}>
+        <div style={styles.brand}>
+          <img src="https://cdn-icons-png.flaticon.com/512/3132/3132693.png" alt="logo" style={{ width: 36, height: 36 }} />
+          <span>GoalTracker</span>
         </div>
-      </div>
+        <h1 style={styles.heading}>Добро пожаловать</h1>
+        <p style={styles.sub}>Войди, чтобы продолжить</p>
 
-      <div style={s.right}>
-        <div style={s.form}>
-          <div style={s.brand}>
-            <img src="https://cdn-icons-png.flaticon.com/512/854/854878.png" alt="logo" style={{ width: 32, height: 32 }} />
-            <span style={s.brandName}>Wanderly</span>
+        <form onSubmit={handleSubmit} style={styles.form}>
+          <div style={styles.field}>
+            <label style={styles.label}>Email</label>
+            <input
+              type="email" name="email" value={form.email}
+              onChange={handleChange} placeholder="you@example.com"
+              style={styles.input} required
+            />
           </div>
+          <div style={styles.field}>
+            <label style={styles.label}>Пароль</label>
+            <input
+              type="password" name="password" value={form.password}
+              onChange={handleChange} placeholder="••••••••"
+              style={styles.input} required
+            />
+          </div>
+          {error && <p style={styles.error}>{error}</p>}
+          <button type="submit" style={styles.btn} disabled={loading}>
+            {loading ? 'Входим...' : 'Войти'}
+          </button>
+        </form>
 
-          <h1 style={s.heading}>С возвращением</h1>
-          <p style={s.sub}>Войди в свой аккаунт</p>
-
-          <form onSubmit={handleSubmit} style={s.fields}>
-            <div style={s.field}>
-              <label style={s.label}>Email</label>
-              <input
-                type="email" value={form.email} placeholder="you@example.com"
-                onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))}
-                style={s.input} required
-              />
-            </div>
-            <div style={s.field}>
-              <label style={s.label}>Пароль</label>
-              <input
-                type="password" value={form.password} placeholder="••••••••"
-                onChange={(e) => setForm((p) => ({ ...p, password: e.target.value }))}
-                style={s.input} required
-              />
-            </div>
-            {error && <div style={s.error}>{error}</div>}
-            <button type="submit" style={s.btn} disabled={loading}>
-              {loading ? 'Входим...' : 'Войти'}
-            </button>
-          </form>
-
-          <p style={s.footer}>
-            Нет аккаунта?{' '}
-            <Link to="/register" style={s.link}>Зарегистрироваться</Link>
-          </p>
-        </div>
+        <p style={styles.footer}>
+          Нет аккаунта?{' '}
+          <Link to="/register" style={styles.link}>Зарегистрироваться</Link>
+        </p>
       </div>
     </div>
   );
 }
 
-const s = {
-  page: { display: 'flex', minHeight: '100vh' },
-  left: { flex: 1, position: 'relative', display: 'none', '@media(min-width:768px)': { display: 'block' } },
-  overlay: { position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%)', display: 'flex', alignItems: 'flex-end', padding: 40 },
-  quote: {},
-  quoteText: { color: '#fff', fontSize: 16, fontStyle: 'italic', lineHeight: 1.6, marginBottom: 8 },
-  quoteAuthor: { color: 'rgba(255,255,255,0.6)', fontSize: 13 },
-  right: { width: '100%', maxWidth: 480, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff', padding: '40px 24px' },
-  form: { width: '100%', maxWidth: 360 },
-  brand: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 40 },
-  brandName: { fontWeight: 800, fontSize: 20, color: '#111827' },
-  heading: { fontWeight: 800, fontSize: 28, color: '#111827', marginBottom: 6 },
-  sub: { color: '#6b7280', fontSize: 14, marginBottom: 32 },
-  fields: { display: 'flex', flexDirection: 'column', gap: 16 },
-  field: { display: 'flex', flexDirection: 'column', gap: 5 },
-  label: { fontSize: 13, fontWeight: 600, color: '#374151' },
-  input: { padding: '11px 14px', borderRadius: 10, border: '1.5px solid #e5e7eb', fontSize: 14, color: '#111827', outline: 'none', transition: 'border-color 0.2s' },
-  error: { background: '#fef2f2', color: '#ef4444', fontSize: 13, padding: '10px 14px', borderRadius: 9 },
-  btn: { padding: '13px', borderRadius: 10, border: 'none', background: '#111827', color: '#fff', fontWeight: 700, fontSize: 15, cursor: 'pointer', marginTop: 4 },
-  footer: { textAlign: 'center', marginTop: 28, fontSize: 14, color: '#6b7280' },
-  link: { color: '#0ea5e9', fontWeight: 600, textDecoration: 'none' },
+const styles = {
+  page: {
+    minHeight: '100vh', display: 'flex', alignItems: 'center',
+    justifyContent: 'center', background: 'linear-gradient(135deg, #f0f4ff 0%, #faf5ff 100%)',
+    padding: 16,
+  },
+  card: {
+    background: '#fff', borderRadius: 20, padding: '40px 36px',
+    width: '100%', maxWidth: 420, boxShadow: '0 8px 40px rgba(99,102,241,0.1)',
+  },
+  brand: {
+    display: 'flex', alignItems: 'center', gap: 10,
+    fontWeight: 800, fontSize: 22, color: '#6366f1', marginBottom: 24,
+  },
+  heading: { fontWeight: 700, fontSize: 26, color: '#1a1a2e', marginBottom: 6 },
+  sub: { color: '#6b7280', fontSize: 14, marginBottom: 28 },
+  form: { display: 'flex', flexDirection: 'column', gap: 18 },
+  field: { display: 'flex', flexDirection: 'column', gap: 6 },
+  label: { fontSize: 13, fontWeight: 500, color: '#374151' },
+  input: {
+    padding: '12px 14px', borderRadius: 10, border: '1px solid #e5e7eb',
+    fontSize: 14, color: '#1a1a2e', outline: 'none',
+  },
+  error: { color: '#ef4444', fontSize: 13, background: '#fef2f2', padding: '10px 12px', borderRadius: 8 },
+  btn: {
+    padding: '13px', borderRadius: 10, border: 'none',
+    background: '#6366f1', color: '#fff', fontWeight: 600, fontSize: 15,
+    cursor: 'pointer', marginTop: 4,
+  },
+  footer: { textAlign: 'center', marginTop: 24, fontSize: 14, color: '#6b7280' },
+  link: { color: '#6366f1', fontWeight: 600, textDecoration: 'none' },
 };

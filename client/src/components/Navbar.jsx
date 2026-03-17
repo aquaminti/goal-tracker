@@ -1,73 +1,45 @@
 import { useAuth } from '../context/AuthContext';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export default function Navbar() {
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
   const navigate = useNavigate();
 
-  return (
-    <header style={s.header}>
-      <div style={s.inner}>
-        <Link to="/" style={s.logo}>
-          <img
-            src="https://cdn-icons-png.flaticon.com/512/854/854878.png"
-            alt="map"
-            style={{ width: 24, height: 24, filter: 'brightness(0) invert(1)' }}
-          />
-          <span>Wanderly</span>
-        </Link>
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
-        <nav style={s.nav}>
-          <Link to="/" style={s.navLink}>Мои поездки</Link>
-          <Link to="/trips/new" style={s.newBtn}>+ Новая поездка</Link>
-          <div style={s.userChip}>
-            <div style={s.avatar}>{user?.name?.[0]?.toUpperCase()}</div>
-            <button onClick={() => { logout(); navigate('/login'); }} style={s.logoutBtn}>
-              Выйти
-            </button>
-          </div>
-        </nav>
+  return (
+    <nav style={styles.nav}>
+      <div style={styles.logo}>
+        <img
+          src="https://cdn-icons-png.flaticon.com/512/3132/3132693.png"
+          alt="logo"
+          style={{ width: 28, height: 28 }}
+        />
+        <span>GoalTracker</span>
       </div>
-    </header>
+      <button onClick={handleLogout} style={styles.btn}>Выйти</button>
+    </nav>
   );
 }
 
-const s = {
-  header: {
-    background: '#111827',
-    borderBottom: '1px solid #1f2937',
-    position: 'sticky', top: 0, zIndex: 100,
-  },
-  inner: {
-    maxWidth: 1200, margin: '0 auto',
-    padding: '0 24px', height: 60,
+const styles = {
+  nav: {
     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    padding: '0 32px', height: 64,
+    background: '#fff', borderBottom: '1px solid #e5e7eb',
+    position: 'sticky', top: 0, zIndex: 100,
+    boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
   },
   logo: {
     display: 'flex', alignItems: 'center', gap: 10,
-    textDecoration: 'none', color: '#fff',
-    fontWeight: 700, fontSize: 18, letterSpacing: '-0.3px',
+    fontWeight: 700, fontSize: 20, color: '#6366f1', letterSpacing: '-0.5px',
   },
-  nav: { display: 'flex', alignItems: 'center', gap: 8 },
-  navLink: {
-    color: '#9ca3af', textDecoration: 'none', fontSize: 14,
-    fontWeight: 500, padding: '6px 12px', borderRadius: 8,
-    transition: 'color 0.2s',
-  },
-  newBtn: {
-    background: '#0ea5e9', color: '#fff', textDecoration: 'none',
-    padding: '8px 16px', borderRadius: 8, fontSize: 13,
-    fontWeight: 600, marginLeft: 8,
-  },
-  userChip: { display: 'flex', alignItems: 'center', gap: 10, marginLeft: 16 },
-  avatar: {
-    width: 32, height: 32, borderRadius: '50%',
-    background: '#374151', color: '#e5e7eb',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    fontWeight: 700, fontSize: 13,
-  },
-  logoutBtn: {
-    background: 'none', border: 'none', color: '#6b7280',
-    cursor: 'pointer', fontSize: 13, fontWeight: 500,
+  btn: {
+    padding: '8px 18px', borderRadius: 8, border: 'none',
+    background: '#f3f4f6', color: '#374151', cursor: 'pointer',
+    fontWeight: 500, fontSize: 14,
   },
 };
