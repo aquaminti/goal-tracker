@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: 'https://goal-tracker-98zg.onrender.com/api',
 });
 
 instance.interceptors.request.use((config) => {
